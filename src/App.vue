@@ -1,15 +1,10 @@
 <template>
     <div id="app" class="scroll-container">
         <!-- card detail -->
-        <card-detail :curTodoArray="curTodoArray" v-on:addtodo="addTodo" v-on:unshow="curTodoArray = {}">
-            <div v-for="(data, index) in curTodoArray.toDo" v-bind:key="index" style="position: relative">
-
-                <!-- checklist -->
-                <Checklist :data="data" v-on:remove="remove(index)" />
-                <!-- /checklist -->
-
-            </div>
-        </card-detail>
+        <card-detail 
+            :curTodoArray="curTodoArray"
+            @updated="updated"
+            @unshow="curTodoArray = {}" />
         <!-- card detail -->
 
         <div class="columns m-12">
@@ -18,11 +13,11 @@
         </div>
         <div v-show="board.lists.length" class="scrollmenu">
             <div class="list-section">
-                <div v-for="(list, listIndex) in board.lists" v-bind:key="listIndex" class="list-container has-background-light mr-4 width-max" @dragover="allowDrop" @drop="drop($event, listIndex)">
+                <div v-for="(list, listIndex) in board.lists" :key="listIndex" class="list-container has-background-light mr-4 width-max" @dragover="allowDrop" @drop="drop($event, listIndex)">
 
                     <!-- list -->
-                    <List :value="list">
-                        <div v-for="(card, cardIndex) in list.cards" v-bind:key="cardIndex" class="card-shadow is-pulled-left mtb-4 width-max" draggable="true" @dragstart="drag($event, card, listIndex, cardIndex)">
+                    <List :value="list" :index="listIndex">
+                        <div v-for="(card, cardIndex) in list.cards" :key="cardIndex" class="card-shadow is-pulled-left mtb-4 width-max" draggable="true" @dragstart="drag($event, card, listIndex, cardIndex)">
 
                             <!-- card -->
                             <Card :value="card" @click.native="showTodo(cardIndex, card)"  />
@@ -40,6 +35,7 @@
 import List from './components/List.vue'
 import Card from './components/Card.vue'
 import CardDetail from './components/CardDetail.vue'
+import ChecklistItem from './components/ChecklistItem.vue'
 import Checklist from './components/Checklist.vue'
 
 export default {
@@ -47,23 +43,34 @@ export default {
       List,
       Card,
       CardDetail,
+      ChecklistItem,
       Checklist
     },
+    
     data() {
-      return{
-          curTextListInput: '',
-          curTodoArray: {},
-          board: {
-              name: 'Project',
-              lists: []
-          }
+        let localData = {
+            curTextListInput: '',
+            curTodoArray: {},
+            board: {
+                name: 'Project',
+                lists: []
+            }
         }
+        if (localStorage.getItem("Local") !== null) {
+            var getLocalDataBoard = localStorage.getItem('Local')
+            localData.board = JSON.parse(getLocalDataBoard)
+        }
+        return localData
+    },
+    updated(){
+        localStorage.setItem('Local', JSON.stringify(this.board))
     },
     methods: {
         addList: function() {
             if(this.curTextListInput === '') {
                 return
             }
+
             this.board.lists.push({
                 name: this.curTextListInput,
                 curTextCardInput: '',
@@ -109,18 +116,8 @@ export default {
             this.board.lists[listIndex].cards.pop()
             this.board.lists[to].cards.push(dataParse.payload)
         },
-        remove: function(index) {
-            for(var i = index; i < this.curTodoArray.toDo.length; i++) {
-                this.curTodoArray.toDo[i] = this.curTodoArray.toDo[i+1]
-            }
-            this.curTodoArray.toDo.pop()
-        },
-        addTodo: function() {
-            if(this.curTodoArray.curTextToDoInput == ''){
-                return
-            }
-            this.curTodoArray.toDo.push({text: this.curTodoArray.curTextToDoInput, isDone: false})
-            this.curTextToDoInput = ''
+        updated: function() {
+            localStorage.setItem('Local', JSON.stringify(this.board))
         }
     }
 }

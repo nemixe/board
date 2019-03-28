@@ -1,29 +1,20 @@
 <template>
     <span>
-        <div @click="data.isDone = !data.isDone" class="tile is-child notification columns hover-list mtb-4 item-border-left">
-            <div class="column is-1">
-                <input class="checkbox" type="checkbox" :checked="data.isDone" />
-            </div>
-            <div class="column is-10">
-                <div class="title is-5 has-text-grey" :class="{strikethrough: data.isDone}">
-                    {{data.text}}
-                </div>
-            </div>
-        </div>
-        <div class="column is-pulled-right hover-list position-absolute checklist-close" @click="$emit('remove')">
-            <span class="icon is-pulled-right">
-                <i class="fas fa-times"></i>
-            </span>
+        <div v-for="(data, index) in checklistarray" v-bind:key="index" style="position: relative">
+            <checklist-item :data="data" @remove="$emit('remove', index)" @updated="$emit('updated')" />
         </div>
     </span>
 </template>
 
 
 <script>
+import ChecklistItem from './ChecklistItem.vue'
 export default {
+    components: {
+        ChecklistItem
+    },
     props: {
-        data: {
-            type: Object,
+        checklistarray: {
             required: true
         }
     },

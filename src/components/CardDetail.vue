@@ -16,16 +16,16 @@
                         </div>
                     </div>
                     
-                    <slot></slot>
+                    <Checklist  :checklistarray="curTodoArray.toDo" @remove="remove" @updated="$emit('updated')" />
 
                     <div class="columns is-marginless is-paddingless">
                         <div class="column is-11 field m-0">
                             <div class="control">
-                                <input v-model="curTodoArray.curTextToDoInput" type="text" class="input" placeholder="Add your To Do" @keyup.enter="$emit('addtodo')" />
+                                <input v-model="curTodoArray.curTextToDoInput" type="text" class="input" placeholder="Add your To Do" @keyup.enter="addtodo" />
                             </div>
                         </div>
                         <div class="column is-1">
-                            <input type="button" class="button is-light is-pulled-right has-text-weight-semibold" value="Add" style="width: 100%" @click.native="$emit('addtodo')"/>  
+                            <input type="button" class="button is-light is-pulled-right has-text-weight-semibold" value="Add" style="width: 100%" @click="addtodo"/>  
                         </div>
                     </div>
                 </article>
@@ -36,12 +36,35 @@
 
 
 <script>
+import Checklist from './Checklist.vue'
+
 export default {
+    components: {
+        Checklist
+    },
     props: {
         curTodoArray: {
             required: true
         }
     },
+    methods: {
+        remove: function(index) {
+            for(var i = index; i < this.curTodoArray.toDo.length; i++) {
+                this.curTodoArray.toDo[i] = this.curTodoArray.toDo[i+1]
+            }
+            this.curTodoArray.toDo.pop()
+
+            this.$emit('updated')
+        },
+        addtodo: function() {
+            if(this.curTodoArray.curTextToDoInput == ''){
+                return
+            }
+            this.curTodoArray.toDo.push({text: this.curTodoArray.curTextToDoInput, isDone: false})
+            this.curTodoArray.curTextToDoInput = ''
+            this.$emit('updated')
+        }
+    }
 }
 </script>
 

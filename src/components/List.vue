@@ -17,15 +17,13 @@
                     class="input is-light column mr-4" 
                     type="input" 
                     placeholder="Card Name" 
-                    @keyup.enter="value.curTextCardInput != '' ? 
-                        value.cards.push({name: value.curTextCardInput, toDo: []}) : null; value.curTextCardInput = ''"
+                    @keyup.enter="addCard"
                 >
                 <input 
                     class="button is-light has-text-weight-semibold" 
                     type="button" 
                     value="Add Card" 
-                    @click="value.curTextCardInput != '' ? 
-                        value.cards.push({name: value.curTextCardInput, toDo: []}) : null; value.curTextCardInput = ''"
+                    @click="addCard"
                 >
             </div>
         </div>
@@ -38,8 +36,23 @@ export default {
         value: {
             type: Object,
             required: true
+        },
+        index: {
+            type: Number,
+            required: true
         }
     },
+    methods: {
+        addCard: function() {
+            if(this.value.curTextCardInput == '') {
+                return
+            }
+
+            const { value, index} = this
+            value.cards.push({name: this.value.curTextCardInput, toDo: []})
+            value.curTextCardInput = ''
+        }
+    }
 }
 </script>
 
