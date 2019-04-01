@@ -1,7 +1,7 @@
 <template>
     <span>
-        <div v-for="(data, index) in checklistarray" v-bind:key="index" style="position: relative">
-            <checklist-item :data="data" @remove="$emit('remove', index)" @updated="$emit('updated')" />
+        <div v-for="(checkItem, indexCheckItem) in checklistarray" :key="indexCheckItem" style="position: relative">
+            <checklist-item :checkItem="checkItem" :indexCheckItem="indexCheckItem" />
         </div>
     </span>
 </template>
@@ -12,6 +12,9 @@ import ChecklistItem from './ChecklistItem.vue'
 export default {
     components: {
         ChecklistItem
+    },
+    updated(){
+        this.$store.dispatch('updated')
     },
     props: {
         checklistarray: {

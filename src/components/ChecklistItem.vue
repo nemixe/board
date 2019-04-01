@@ -2,15 +2,15 @@
     <span>
         <div @click="toggleCheck" class="tile is-child notification columns hover-list mtb-4 item-border-left">
             <div class="column is-1">
-                <input class="checkbox" type="checkbox" :checked="data.isDone" />
+                <input class="checkbox" type="checkbox" :checked="checkItem.isDone" />
             </div>
             <div class="column is-10">
-                <div class="title is-5 has-text-grey" :class="{strikethrough: data.isDone}">
-                    {{data.text}}
+                <div class="title is-5 has-text-grey" :class="{strikethrough: checkItem.isDone}">
+                    {{checkItem.text}}
                 </div>
             </div>
         </div>
-        <div class="column is-pulled-right hover-list position-absolute checklist-close" @click="$emit('remove')">
+        <div class="column is-pulled-right hover-list position-absolute checklist-close" @click="removeCheckItem(indexCheckItem)">
             <span class="icon is-pulled-right">
                 <i class="fas fa-times"></i>
             </span>
@@ -20,17 +20,27 @@
 
 
 <script>
+
 export default {
     props: {
-        data: {
+        checkItem: {
             type: Object,
+            required: true
+        },
+        indexCheckItem: {
+            type: Number,
             required: true
         }
     },
+    updated(){
+        this.$store.dispatch('updated')
+    },
     methods: {
         toggleCheck: function() {
-            this.data.isDone = !this.data.isDone
-            this.$emit('updated')
+            this.checkItem.isDone = !this.checkItem.isDone
+        },
+        removeCheckItem: function(index) {
+            this.$store.dispatch('removeTodo', index)
         }
     }
 }

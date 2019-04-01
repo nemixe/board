@@ -8,12 +8,15 @@
 
 <script>
 export default {
-     props: {
+    props: {
         value: {
             type: Object,
             required: true
         }
     },
+    updated(){
+        this.$store.dispatch('updated')
+    }
 }
 </script>
 

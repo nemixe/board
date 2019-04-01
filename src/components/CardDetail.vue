@@ -1,27 +1,27 @@
 <template>
-    <div v-show="Object.keys(curTodoArray).length" class="has-background-info card-detail">
+    <div v-show="Object.keys(curTodo).length" class="has-background-info card-detail">
         <div class="container"> 
             <div class="tile is-parent card-detail-container">
                 <article class="tile is-child notification">
                     <div class="notification card-detail-header">
                         <div class="columns is-marginless">
                             <div class="column">
-                                <div class="title">{{curTodoArray.name}}</div>
+                                <div class="title">{{curTodo.name}}</div>
                             </div>
                             <div class="column is-3 is-pulled-right">
-                                <a class="is-pulled-right has-text-weight-semibold no-decoration" @click="$emit('unshow')">
+                                <a class="is-pulled-right has-text-weight-semibold no-decoration" @click="hideCardDetail">
                                     <span>Close</span>
                                 </a>
                             </div>
                         </div>
                     </div>
                     
-                    <Checklist  :checklistarray="curTodoArray.toDo" @remove="remove" @updated="$emit('updated')" />
+                    <checklist  :checklistarray="curTodo.toDo" />
 
                     <div class="columns is-marginless is-paddingless">
                         <div class="column is-11 field m-0">
                             <div class="control">
-                                <input v-model="curTodoArray.curTextToDoInput" type="text" class="input" placeholder="Add your To Do" @keyup.enter="addtodo" />
+                                <input v-model="curTodo.curTextToDoInput" type="text" class="input" placeholder="Add your To Do" @keyup.enter="addtodo" />
                             </div>
                         </div>
                         <div class="column is-1">
@@ -36,33 +36,29 @@
 
 
 <script>
+import {mapState} from 'vuex'
 import Checklist from './Checklist.vue'
 
 export default {
     components: {
         Checklist
     },
-    props: {
-        curTodoArray: {
-            required: true
-        }
+    computed: {
+        ...mapState(['curTodo'])
     },
     methods: {
-        remove: function(index) {
-            for(var i = index; i < this.curTodoArray.toDo.length; i++) {
-                this.curTodoArray.toDo[i] = this.curTodoArray.toDo[i+1]
-            }
-            this.curTodoArray.toDo.pop()
-
-            this.$emit('updated')
-        },
         addtodo: function() {
-            if(this.curTodoArray.curTextToDoInput == ''){
+            const {curTodo} = this.$store.state
+            if(curTodo.curTextToDoInput == ''){
                 return
             }
-            this.curTodoArray.toDo.push({text: this.curTodoArray.curTextToDoInput, isDone: false})
-            this.curTodoArray.curTextToDoInput = ''
-            this.$emit('updated')
+            curTodo.toDo.push({text: curTodo.curTextToDoInput, isDone: false})
+            curTodo.curTextToDoInput = ''
+            
+            this.$store.dispatch('updated')
+        },
+        hideCardDetail: function() {
+            this.$store.dispatch('hideCardDetail')
         }
     }
 }

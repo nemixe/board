@@ -2,7 +2,7 @@
     <span>
         <div class="content width-max p-0 m-0">
             <div class="title is-5 width-max mb-4 overflow-hidden">
-                {{value.name}}
+                {{list.name}}
             </div>
         </div>
         <hr class="mtb-12 line"/>
@@ -13,7 +13,7 @@
         <div class="is-pulled-left visible-on-hover mt-12">
             <div class="columns width-max p-4">
                 <input 
-                    v-model="value.curTextCardInput" 
+                    v-model="list.curTextCardInput" 
                     class="input is-light column mr-4" 
                     type="input" 
                     placeholder="Card Name" 
@@ -22,7 +22,7 @@
                 <input 
                     class="button is-light has-text-weight-semibold" 
                     type="button" 
-                    value="Add Card" 
+                    list="Add Card" 
                     @click="addCard"
                 >
             </div>
@@ -33,7 +33,7 @@
 <script>
 export default {
     props: {
-        value: {
+        list: {
             type: Object,
             required: true
         },
@@ -42,15 +42,18 @@ export default {
             required: true
         }
     },
+    updated(){
+        this.$store.dispatch('updated')
+    },
     methods: {
         addCard: function() {
-            if(this.value.curTextCardInput == '') {
+            if(this.list.curTextCardInput == '') {
                 return
             }
 
-            const { value, index} = this
-            value.cards.push({name: this.value.curTextCardInput, toDo: []})
-            value.curTextCardInput = ''
+            const { list, index} = this
+            list.cards.push({name: this.list.curTextCardInput, toDo: []})
+            list.curTextCardInput = ''
         }
     }
 }
