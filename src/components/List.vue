@@ -1,15 +1,36 @@
 <template>
     <span>
         <div class="content width-max p-0 m-0">
-            <div class="title is-5 width-max mb-4 overflow-hidden">
-                {{list.name}}
+            <div class="columns">
+                <div class="column is-10">
+                    <div class="title is-5 width-max mb-4">
+                        {{list.name}}
+                    </div>
+                </div>
+                <div class="column">
+                    <span class="icon is-pulled-right" @click="removeList(listIndex)">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
             </div>
         </div>
+
         <hr class="mtb-12 line"/>
 
-        <a class="no-text-decoration">
-            <slot></slot>
-        </a>
+        <div 
+            v-for="(card, cardIndex) in list.cards" 
+            :key="cardIndex" 
+            class="card-shadow is-pulled-left mtb-4 width-max" 
+            draggable="true" 
+            @dragstart="dragStart($event, card, listIndex, cardIndex)"
+        >
+            <a class="no-text-decoration">
+                <!-- card -->
+                <card :card="card" :listIndex="listIndex" :cardIndex="cardIndex" />
+                <!-- /card -->
+            </a>
+        </div>
+
         <div class="is-pulled-left visible-on-hover mt-12">
             <div class="columns width-max p-4">
                 <input 
@@ -22,7 +43,7 @@
                 <input 
                     class="button is-light has-text-weight-semibold" 
                     type="button" 
-                    list="Add Card" 
+                    value="Add Card"
                     @click="addCard"
                 >
             </div>
@@ -31,19 +52,20 @@
 </template>
 
 <script>
+import Card from './Card.vue'
 export default {
+    components: {
+        Card
+    },
     props: {
         list: {
             type: Object,
             required: true
         },
-        index: {
+        listIndex: {
             type: Number,
             required: true
         }
-    },
-    updated(){
-        this.$store.dispatch('updated')
     },
     methods: {
         addCard: function() {
@@ -51,11 +73,34 @@ export default {
                 return
             }
 
-            const { list, index} = this
+            const { list, listIndex } = this
             list.cards.push({name: this.list.curTextCardInput, toDo: []})
             list.curTextCardInput = ''
+        },
+        dragStart: function(e, data, listIndex, cardIndex) {
+            var dataTemplate = {
+                from: {
+                    index: listIndex,
+                    card: {
+                        index: cardIndex
+                    }
+                },
+                payload: {
+                    name: data.name,
+                    toDo: data.toDo
+                }
+            }
+            var dataStringify = JSON.stringify(dataTemplate)
+
+            e.dataTransfer.setData("dataTrans", dataStringify)
+        },
+        removeList: function(index) {
+            this.$store.dispatch('removeList', index)
         }
-    }
+    },
+    updated(){
+        this.$store.dispatch('updated')
+    },
 }
 </script>
 

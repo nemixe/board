@@ -1,12 +1,12 @@
 <template>
-    <div v-show="Object.keys(curTodo).length" class="has-background-info card-detail">
+    <div class="has-background-info card-detail">
         <div class="container"> 
             <div class="tile is-parent card-detail-container">
                 <article class="tile is-child notification">
                     <div class="notification card-detail-header">
                         <div class="columns is-marginless">
                             <div class="column">
-                                <div class="title">{{curTodo.name}}</div>
+                                <div class="title">{{curCard.name}}</div>
                             </div>
                             <div class="column is-3 is-pulled-right">
                                 <a class="is-pulled-right has-text-weight-semibold no-decoration" @click="hideCardDetail">
@@ -15,17 +15,19 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <checklist  :checklistarray="curTodo.toDo" />
+
+                    <!-- checklist -->
+                    <check-list :checkList="curCard.toDo" />
+                    <!-- /checklist -->
 
                     <div class="columns is-marginless is-paddingless">
                         <div class="column is-11 field m-0">
                             <div class="control">
-                                <input v-model="curTodo.curTextToDoInput" type="text" class="input" placeholder="Add your To Do" @keyup.enter="addtodo" />
+                                <input v-model="curCard.curTextToDoInput" type="text" class="input" placeholder="Add your To Do" @keyup.enter="addTodo" />
                             </div>
                         </div>
                         <div class="column is-1">
-                            <input type="button" class="button is-light is-pulled-right has-text-weight-semibold" value="Add" style="width: 100%" @click="addtodo"/>  
+                            <input type="button" class="button is-light is-pulled-right has-text-weight-semibold" value="Add" style="width: 100%" @click="addTodo"/>  
                         </div>
                     </div>
                 </article>
@@ -37,30 +39,31 @@
 
 <script>
 import {mapState} from 'vuex'
-import Checklist from './Checklist.vue'
+import CheckList from './CheckList.vue'
 
 export default {
     components: {
-        Checklist
+        CheckList
     },
     computed: {
-        ...mapState(['curTodo'])
+        ...mapState(['curCard'])
     },
     methods: {
-        addtodo: function() {
-            const {curTodo} = this.$store.state
-            if(curTodo.curTextToDoInput == ''){
-                return
-            }
-            curTodo.toDo.push({text: curTodo.curTextToDoInput, isDone: false})
-            curTodo.curTextToDoInput = ''
+        addTodo: function() {
+            const {curCard} = this.$store.state
+            if(curCard.curTextToDoInput == '') return
+            curCard.toDo.push({text: curCard.curTextToDoInput, isDone: false})
+            curCard.curTextToDoInput = ''
             
             this.$store.dispatch('updated')
         },
         hideCardDetail: function() {
             this.$store.dispatch('hideCardDetail')
         }
-    }
+    },
+    updated(){
+        this.$store.dispatch('updated')
+    },
 }
 </script>
 

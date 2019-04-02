@@ -6,12 +6,20 @@ export const addList = ({ commit }, name) => {
     commit('addList', name)
 }
 
-export const dragEnd = ({ commit }, { dataTrans, cardIndex, listIndex, to }) => {
-    commit('dragEnd', { dataTrans, cardIndex, listIndex, to })
+export const dragEnd = ({ commit }, { cardData, cardIndex, listIndex, to }) => {
+    commit('dragEnd', { cardData, cardIndex, listIndex, to })
 }
 
 export const removeTodo = ({ commit }, index) => {
-    commit('remove', index)
+    commit('removeTodo', index)
+}
+
+export const removeList = ({ commit }, index) => {
+    commit('removeList', index)
+}
+
+export const removeCard = ({ commit }, payload) => {
+    commit('removeCard', payload)
 }
 
 export const showCardDetail = ({ commit }, payload) => {

@@ -9,23 +9,35 @@ export default {
             cards: []
         })
     },
-    dragEnd(state, { dataTrans, cardIndex, listIndex, to }) {
+    dragEnd(state, { cardData, cardIndex, listIndex, to }) {
         for(var i = cardIndex; i < state.board.lists[listIndex].cards.length; i++) {
             state.board.lists[listIndex].cards[i] = state.board.lists[listIndex].cards[i+1]
         }
         state.board.lists[listIndex].cards.pop()
-        state.board.lists[to].cards.push(dataTrans)
+        state.board.lists[to].cards.push(cardData)
     },
-    remove(state, index) {
-        for(var i = index; i < state.curTodo.toDo.length; i++) {
-            state.curTodo.toDo[i] = state.curTodo.toDo[i+1]
+    removeTodo(state, index) {
+        for(var i = index; i < state.curCard.toDo.length; i++) {
+            state.curCard.toDo[i] = state.curCard.toDo[i+1]
         }
-        state.curTodo.toDo.pop()
+        state.curCard.toDo.pop()
+    },
+    removeList(state, index) {
+        for(var i = index; i < state.board.lists.length; i++) {
+            state.board.lists[i] = state.board.lists[i+1]
+        }
+        state.board.lists.pop()
+    },
+    removeCard(state, {listIndex, cardIndex}) {
+        for(var i = cardIndex; i < state.board.lists.length; i++) {
+            state.board.lists[listIndex].cards[i] = state.board.lists[i].cards[i+1]
+        }
+        state.board.lists[listIndex].cards.pop()
     },
     showCardDetail(state, payload) {
-        state.curTodo = payload
+        state.curCard = payload
     },
     hideCardDetail(state) {
-        state.curTodo = {}
+        state.curCard = {}
     }
 }

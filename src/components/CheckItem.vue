@@ -10,7 +10,7 @@
                 </div>
             </div>
         </div>
-        <div class="column is-pulled-right hover-list position-absolute checklist-close" @click="removeCheckItem(indexCheckItem)">
+        <div class="column is-pulled-right hover-list position-absolute checklist-close" @click="removeTodo(checkItemIndex)">
             <span class="icon is-pulled-right">
                 <i class="fas fa-times"></i>
             </span>
@@ -27,21 +27,21 @@ export default {
             type: Object,
             required: true
         },
-        indexCheckItem: {
+        checkItemIndex: {
             type: Number,
             required: true
         }
-    },
-    updated(){
-        this.$store.dispatch('updated')
     },
     methods: {
         toggleCheck: function() {
             this.checkItem.isDone = !this.checkItem.isDone
         },
-        removeCheckItem: function(index) {
+        removeTodo: function(index) {
             this.$store.dispatch('removeTodo', index)
         }
+    },
+    updated(){
+        this.$store.dispatch('updated')
     }
 }
 </script>

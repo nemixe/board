@@ -1,26 +1,34 @@
 <template>
     <span>
-        <div v-for="(checkItem, indexCheckItem) in checklistarray" :key="indexCheckItem" style="position: relative">
-            <checklist-item :checkItem="checkItem" :indexCheckItem="indexCheckItem" />
+        <div 
+            v-for="(checkItem, checkItemIndex) in checkList" 
+            :key="checkItemIndex" 
+            style="position: relative"
+        >
+            <check-item 
+                :checkItem="checkItem" 
+                :checkItemIndex="checkItemIndex" 
+            />
         </div>
     </span>
 </template>
 
 
 <script>
-import ChecklistItem from './ChecklistItem.vue'
+import CheckItem from './CheckItem.vue'
+
 export default {
     components: {
-        ChecklistItem
-    },
-    updated(){
-        this.$store.dispatch('updated')
+        CheckItem
     },
     props: {
-        checklistarray: {
+        checkList: {
             required: true
         }
     },
+    updated(){
+        this.$store.dispatch('updated')
+    }
 }
 </script>
 
