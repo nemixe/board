@@ -29,3 +29,7 @@ export const showCardDetail = ({ commit }, payload) => {
 export const hideCardDetail = ({ commit }) => {
     commit('hideCardDetail')
 }
+
+export const localToState = ({ commit }) => {
+    commit('localToState')
+}

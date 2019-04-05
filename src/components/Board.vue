@@ -35,9 +35,13 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import List from './List.vue'
 
 export default {
+    beforeCreate: function() {
+        this.$store.dispatch('localToState')
+    },
     components: {
       List
     },
@@ -47,21 +51,14 @@ export default {
         }
     },
     computed: {
-        board: function() {
-            let stateBoard = this.$store.state.board
-            if (localStorage.getItem("Board") !== null) {
-                var getLocalDataBoard = localStorage.getItem('Board')
-                stateBoard = JSON.parse(getLocalDataBoard)
-            }
-            this.$store.state.board = stateBoard
-            return stateBoard
-        },
+        ...mapState(['board'])
     },
     methods: {
         addList: function() {
             if(this.listModel === '') return
             
             this.$store.dispatch('addList', this.listModel)
+            this.listModel = ''
         },
         showCardDetail: function(index, val) {
             let payload = {
@@ -75,18 +72,15 @@ export default {
         },
         dragEnd: function(e, to) {
             var dataTrans = e.dataTransfer.getData("dataTrans")
-
             if(dataTrans === '') return
-
-            var dataParse = JSON.parse(dataTrans)
             
+            var dataParse = JSON.parse(dataTrans)
             var payload = {
                 cardData: dataParse.payload, 
                 cardIndex: dataParse.from.card.index, 
                 listIndex: dataParse.from.index, 
                 to
             }
-            
             this.$store.dispatch('dragEnd', payload)
         }
     },

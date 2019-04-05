@@ -8,7 +8,7 @@
                     </div>
                 </div>
                 <div class="column">
-                    <span class="icon is-pulled-right" @click="removeList(listIndex)">
+                    <span class="icon is-pulled-right cursor-pointer" @click="removeList(listIndex)">
                         <i class="fas fa-times"></i>
                     </span>
                 </div>
@@ -94,8 +94,8 @@ export default {
 
             e.dataTransfer.setData("dataTrans", dataStringify)
         },
-        removeList: function(index) {
-            this.$store.dispatch('removeList', index)
+        removeList: function(listIndex) {
+            this.$store.dispatch('removeList', listIndex)
         }
     },
     updated(){
@@ -106,5 +106,9 @@ export default {
 
 <style lang="stylus" scoped>
     .line
-        border: 1px solid #ebebeb !important
+        border 1px solid #ebebeb !important
+    .icon
+        color lightgray
+    .cursor-pointer
+        cursor pointer
 </style>

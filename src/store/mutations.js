@@ -1,4 +1,11 @@
 export default {
+    localToState(state) {
+        if (localStorage.getItem("Board") !== null) {
+            var getLocalDataBoard = localStorage.getItem('Board')
+            var localBoard = JSON.parse(getLocalDataBoard)
+            state.board = localBoard
+        }
+    },
     updated(state) {
         localStorage.setItem('Board', JSON.stringify(state.board))
     },
@@ -29,8 +36,8 @@ export default {
         state.board.lists.pop()
     },
     removeCard(state, {listIndex, cardIndex}) {
-        for(var i = cardIndex; i < state.board.lists.length; i++) {
-            state.board.lists[listIndex].cards[i] = state.board.lists[i].cards[i+1]
+        for(var i = cardIndex; i < state.board.lists[listIndex].cards.length; i++) {
+            state.board.lists[listIndex].cards[i] = state.board.lists[listIndex].cards[i+1]
         }
         state.board.lists[listIndex].cards.pop()
     },
